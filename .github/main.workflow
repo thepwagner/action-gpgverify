@@ -20,7 +20,6 @@ action "filter master" {
 action "publish master" {
   needs = "filter master"
   uses = "./.github/action"
-  runs = "publish"
   env = {
     DOCKER_IMAGE = "pwagner/action-gpgverify"
     DOCKERHUB_USERNAME = "pwagner"
