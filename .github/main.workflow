@@ -1,6 +1,6 @@
 workflow "publish master to latest" {
   on = "push"
-  resolves = "publish"
+  resolves = "publish master"
 }
 
 action "gpgverify" {
@@ -11,16 +11,20 @@ action "gpgverify" {
   ]
 }
 
-# Publish "master" to ":latest"
-action "filter-master" {
+action "filter master" {
   needs = "gpgverify"
   uses = "actions/bin/filter@master"
   args = "branch master"
 }
-action "publish" {
-  needs = "filter-master"
-  uses = "docker://alpine:3.8"
-  runs = "sh"
-  args = "echo publish_goes_here"
+
+action "publish master" {
+  needs = "filter master"
+  uses = "./.github/action"
+  runs = "publish"
+  env = {
+    DOCKER_IMAGE = "pwagner/action-gpgverify"
+    DOCKERHUB_USERNAME = "pwagner"
+  }
+  secrets = ["DOCKERHUB_PASSWORD"]
 }
 
