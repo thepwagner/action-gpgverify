@@ -1,6 +1,9 @@
 #!/bin/sh
 
-docker build -t $DOCKER_IMAGE:latest .
+TAG=${1:-latest}
+
+docker build -t $DOCKER_IMAGE:$GITHUB_SHA .
 echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-docker push $DOCKER_IMAGE:latest
+docker tag $DOCKER_IMAGE:$GITHUB_SHA $DOCKER_IMAGE:$TAG
+docker push $DOCKER_IMAGE:$TAG
 
