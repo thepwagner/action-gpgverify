@@ -6,7 +6,8 @@ workflow "publish master to latest" {
 action "gpgverify" {
   uses = "./"
   args = [
-    "0x0671E992E8A67A79"
+    "0x4AEE18F83AFDEB23", # GitHub web
+    "0x0671E992E8A67A79"  # thepwagner
   ]
 }
 
