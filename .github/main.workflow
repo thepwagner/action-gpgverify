@@ -3,6 +3,11 @@ workflow "publish master to latest" {
   resolves = "publish master"
 }
 
+workflow "publish tags" {
+  on = "push"
+  resolves = "publish tag"
+}
+
 action "gpgverify" {
   uses = "./"
   args = [
@@ -27,3 +32,18 @@ action "publish master" {
   secrets = ["DOCKERHUB_PASSWORD"]
 }
 
+action "filter tag" {
+  needs = "gpgverify"
+  uses = "actions/bin/filter@master"
+  args = "tag"
+}
+
+action "publish tag" {
+  needs = "filter tag"
+  uses = "./.github/action"
+  env = {
+    DOCKER_IMAGE = "pwagner/action-gpgverify"
+    DOCKERHUB_USERNAME = "pwagner"
+  }
+  secrets = ["DOCKERHUB_PASSWORD"]
+}
